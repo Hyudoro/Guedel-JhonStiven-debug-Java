@@ -1,71 +1,44 @@
 package com.hemebiotech.analytics;
 
-import java.util.*;
-import java.util.stream.*;
-import java.nio.file.*;
-import java.nio.file.StandardOpenOption;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
-/**
- * AnalyticsCounter reads a file containing symptoms, counts the occurrences
- * of each symptom, and outputs the results both to the console and a file.
- * <p>
- * The program demonstrates a Map-Reduce style approach using Java Streams.
- * It trims whitespace, ignores empty lines, groups symptoms by name,
- * counts their occurrences, sorts them alphabetically, and writes the results.
- * </p>
- *
- * Example input (symptoms.txt):
- * headache
- * rash
- * headache
- * pupil
- * rash
- *
- * Example output:
- * headache: 2
- * pupil: 1
- * rash: 2
- *
- * @author
- */
 public class AnalyticsCounter {
 
-	/**
-	 * Main method. Reads a file of symptoms, counts occurrences, sorts alphabetically,
-	 * and writes results to console and "result.out".
-	 *
-	 * @param args command-line arguments (not used)
-	 * @throws IOException if the file cannot be read or written
-	 */
-	public static void main(String args[]) throws IOException {
-		// Read lines from the file, trim, filter empty lines, and count occurrences
-		Map<String, Long> symptomCounts = Files.lines(Paths.get(
-						"Project02Eclipse/src/com/hemebiotech/analytics/symptoms.txt"))
-				.map(String::trim)                     // Remove leading/trailing spaces
-				.filter(s -> !s.isEmpty())            // Skip empty lines
-				.collect(Collectors.groupingBy(        // Group by symptom
+	public static void main(String[] args) {
+
+		// 1. Lire les symptômes via l'interface
+		ISymptomReader reader = new ReadSymptomDataFromFile(
+				"Project02Eclipse/src/com/hemebiotech/analytics/symptoms.txt"
+		);
+		List<String> symptoms = reader.GetSymptoms();
+
+		// 2. Compter les occurrences (Map <String, Long>)
+		Map<String, Long> symptomCounts = symptoms.stream()
+				.map(String::trim)
+				.filter(s -> !s.isEmpty())
+				.collect(Collectors.groupingBy(
 						s -> s,
-						Collectors.counting()         // Count occurrences (Map-Reduce style)
+						Collectors.counting()
 				));
 
-		// Sort the map by symptom name (alphabetical order) and process each entry
-		symptomCounts.entrySet().stream()
-				.sorted(Map.Entry.comparingByKey())   // Sort keys alphabetically
-				.forEach(entry -> {
-					String output = entry.getKey() + ": " + entry.getValue();
-					System.out.println(output);       // Print to console
-					try {
-						// Append each line to "result.out"
-						Files.write(
-								Paths.get("result.out"),
-								(output + "\n").getBytes(),
-								StandardOpenOption.CREATE,
-								StandardOpenOption.APPEND
-						);
-					} catch (IOException e) {
-						e.printStackTrace();          // Handle potential file write exceptions
-					}
-				});
+		// 3. Trier alphabétiquement
+		Map<String, Long> sortedSymptoms = new TreeMap<>(symptomCounts);
+
+		// 4. Écrire via ISymptomWriter (pas directement ici !)
+		ISymptomWriter writer = new WriteSymptomDataToFile("result.out");
+
+		try {
+			writer.writeSymptoms(sortedSymptoms);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// 5. Affichage console (optionnel)
+		sortedSymptoms.forEach((k, v) -> System.out.println(k + ": " + v));
 	}
 }
+
