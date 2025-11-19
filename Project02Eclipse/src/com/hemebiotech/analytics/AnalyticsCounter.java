@@ -9,14 +9,8 @@ import java.util.stream.Collectors;
 public class AnalyticsCounter {
 
 	public static void main(String[] args) {
-
-		// 1. Lire les symptômes via l'interface
-		ISymptomReader reader = new ReadSymptomDataFromFile(
-				"Project02Eclipse/src/com/hemebiotech/analytics/symptoms.txt"
-		);
+		ISymptomReader reader = new ReadSymptomDataFromFile("Project02Eclipse/src/com/hemebiotech/analytics/symptoms.txt");
 		List<String> symptoms = reader.GetSymptoms();
-
-		// 2. Compter les occurrences (Map <String, Long>)
 		Map<String, Long> symptomCounts = symptoms.stream()
 				.map(String::trim)
 				.filter(s -> !s.isEmpty())
@@ -24,20 +18,14 @@ public class AnalyticsCounter {
 						s -> s,
 						Collectors.counting()
 				));
-
-		// 3. Trier alphabétiquement
 		Map<String, Long> sortedSymptoms = new TreeMap<>(symptomCounts);
-
-		// 4. Écrire via ISymptomWriter (pas directement ici !)
 		ISymptomWriter writer = new WriteSymptomDataToFile("result.out");
 
 		try {
 			writer.writeSymptoms(sortedSymptoms);
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // handling errors temporarely
 		}
-
-		// 5. Affichage console (optionnel)
 		sortedSymptoms.forEach((k, v) -> System.out.println(k + ": " + v));
 	}
 }
