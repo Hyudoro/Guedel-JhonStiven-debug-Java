@@ -28,7 +28,7 @@ public class AnalyticsCounter {
 
 
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		ISymptomReader reader = new ReadSymptomDataFromFile("Project02Eclipse/src/com/hemebiotech/analytics/symptoms.txt");
 		ISymptomWriter writer = new WriteSymptomDataToFile("result.out");
 		AnalyticsCounter counter = new AnalyticsCounter(reader, writer);
@@ -36,24 +36,15 @@ public class AnalyticsCounter {
 		List<String> symptoms = counter.getSymptoms();
 		Map<String, Long> symptomsByOccurences = counter.countBySymptoms(symptoms);
         Map<String, Long> symtomsRankedAlphabetically = counter.SortSymptomsAlphabetically(symptomsByOccurences);
-		
-
-
-
-//		/try {
-//			writer.writeSymptoms(sortedSymptoms);
-//		} catch (IOException e) {
-//			e.printStackTrace(); // handling errors temporarely
-//		}
-//		sortedSymptoms.forEach((k, v) -> System.out.println(k + ": " + v));
-//	}
+		counter.writeSymptoms(symtomsRankedAlphabetically);
 	}
+
+	
+
 
 	public List<String> getSymptoms(){
 		return reader.getSymptoms();
 	}
-
-
 
 
 	public static Map<String, Long> countBySymptoms(List<String> symptoms){
@@ -72,7 +63,11 @@ public class AnalyticsCounter {
 		return new TreeMap<>(naturalRanking);
 	}
 
+	public void writeSymptoms(Map<String, Long> SymptomsRankedAlphabeticallyGroupedByOccurences) throws IOException {
+		writer.writeSymptoms(SymptomsRankedAlphabeticallyGroupedByOccurences);
+	}
 
- }
+
+}
 
 
