@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class WriteSymptomDataToFile implements ISymptomWriter {
 
-    private final Path outputPath;
+    private final Path outputPath; //The final path of the file once generated and filled.
 
     /**
      * Writes the given map of symptoms and their counts to the output file.
@@ -37,13 +37,13 @@ public class WriteSymptomDataToFile implements ISymptomWriter {
     @Override
     public void writeSymptoms(Map<String, Long> symptoms) throws IOException {
         StringBuilder builder = new StringBuilder();
-
+        //Create the inputs stream of the map.
         symptoms.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .forEach(entry ->
-                        builder.append(entry.getKey())
+                        builder.append(entry.getKey()) //by symptoms
                                 .append(": ")
-                                .append(entry.getValue())
+                                .append(entry.getValue()) //by occurences
                                 .append("\n")
                 );
 

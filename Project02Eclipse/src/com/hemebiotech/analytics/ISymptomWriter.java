@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  *
  * Defines a component capable of writing symptoms and their occurrence counts
- * to an output destination (e.g. file, console, or external system).
+ * to an output destination (file, console)
  *
  *
  */
