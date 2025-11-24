@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  *
  * Defines a component capable of writing symptoms and their occurrence counts
- * to an output destination (file, console)
+ * to an output destination (file, console).
  *
  *
  */
@@ -17,7 +17,7 @@ public interface ISymptomWriter {
      * Writes the provided symptoms and their number of occurrences.
      * The map must contain unique symptom names as keys and their
      * associated occurrence counts as values.
-     *
+     * Any {@link IOException} encountered during writing is thrown.
      *
      * @param symptoms
      * @throws IOException
