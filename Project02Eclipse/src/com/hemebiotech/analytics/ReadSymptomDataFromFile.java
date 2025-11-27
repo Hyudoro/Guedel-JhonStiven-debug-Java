@@ -14,14 +14,14 @@ import java.util.List;
  */
 public class ReadSymptomDataFromFile implements ISymptomReader {
 
-	private final String filepath;
+	private final String inputPath;
 	
 	/**
 	 * Constructs a reader for the given file path.
 	 * @param filepath a full or partial path to file with symptom strings in it, one per line.
 	 */
 	public ReadSymptomDataFromFile (String filepath) {
-		this.filepath = filepath;
+		this.inputPath = filepath;
 	}
 
 	/**
@@ -35,9 +35,9 @@ public class ReadSymptomDataFromFile implements ISymptomReader {
 	public List<String> getSymptoms() {
 		ArrayList<String> result = new ArrayList<>();
 		
-		if (filepath != null) {
+		if (inputPath != null) {
 			try {
-				BufferedReader reader = new BufferedReader (new FileReader(filepath)); // Creates buffered file reader.
+				BufferedReader reader = new BufferedReader (new FileReader(inputPath)); // Creates buffered file reader.
 				String line = reader.readLine();
 				
 				while (line != null) {
